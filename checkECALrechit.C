@@ -313,7 +313,7 @@ void checkECALrechit(int startfile = 0,
 	    hErr_rechit_isopho_eb->Fill(eb_err[nrec]);
 	    if(eb_e[nrec]>=5.0) hErr_rechit_e5_isopho_eb->Fill(eb_err[nrec]);
 	    hChi2_vs_Err_isopho_eb->Fill(eb_err[nrec], eb_chi2[nrec]);
-	    if(eb_e[nrec]>=5.0) hChi2_vs_Err_isopho_eb->Fill(eb_err[nrec], eb_chi2[nrec]);
+	    if(eb_e[nrec]>=5.0) hChi2_vs_Err_e5_isopho_eb->Fill(eb_err[nrec], eb_chi2[nrec]);
 	  }
 	}// rechit barrel loop
 
@@ -326,8 +326,8 @@ void checkECALrechit(int startfile = 0,
 	    if(ee_e[nrec]>=5.0) hChi2_rechit_e5_isopho_ee->Fill(ee_chi2[nrec]);
 	    hErr_rechit_isopho_ee->Fill(ee_err[nrec]);
 	    if(ee_e[nrec]>=5.0) hErr_rechit_e5_isopho_ee->Fill(ee_err[nrec]);
-	    hChi2_vs_Err_isopho_e->Fill(ee_err[nrec], ee_chi2[nrec]);
-	    if(ee_e[nrec]>=5.0) hChi2_vs_Err_isopho_ee->Fill(ee_err[nrec], ee_chi2[nrec]);	    
+	    hChi2_vs_Err_isopho_ee->Fill(ee_err[nrec], ee_chi2[nrec]);
+	    if(ee_e[nrec]>=5.0) hChi2_vs_Err_e5_isopho_ee->Fill(ee_err[nrec], ee_chi2[nrec]);	    
 	  }
 	}// rechit endcap loop
 	
