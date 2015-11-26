@@ -56,7 +56,7 @@ using namespace std;
 
 void checkECALrechit(int startfile = 0,
 		     int endfile = 1,
-		     std::string kFoname="output.root")
+		     std::string kFoname="output")
 
 {
 
@@ -231,7 +231,7 @@ void checkECALrechit(int startfile = 0,
 
 
   // now define the output file and start the loops
-  TFile *fout = new TFile(kFoname.c_str(),"RECREATE");
+  TFile *fout = new TFile(Form("%s_%d.root",kFoname.c_str(),endfile),"RECREATE");
   fout->cd();
 
   // define the histograms:
@@ -252,7 +252,7 @@ void checkECALrechit(int startfile = 0,
 
   if(printDebug) cout<<"Running through all the events now"<<endl;
   //Long64_t nentries = jetTree[0]->GetEntries();
-  Long64_t nentries = 10000;;
+  Long64_t nentries = 30000;;
   if(printDebug) nentries = 10;
   TRandom rnd;
 
