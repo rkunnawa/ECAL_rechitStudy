@@ -71,7 +71,7 @@ void checkECALrechit(int startfile = 0,
 
   bool printDebug = false;
   bool doIsoPhoMatching = true;
-  bool doJetMatching = true;
+  bool doJetMatching = false;
     
   TDatime date;
 
@@ -199,10 +199,10 @@ void checkECALrechit(int startfile = 0,
   jetTree[3]->SetBranchAddress("rawpt",eta_F);
   jetTree[3]->SetBranchAddress("jtphi",phi_F);
 
-  jetTree[4]->SetBranchAddress("ecalIso",&ecalIso);
-  jetTree[4]->SetBranchAddress("hcalIso",&hcalIso);
-  jetTree[4]->SetBranchAddress("trackIso",&trackIso);
-  jetTree[4]->SetBranchAddress("hadronicOverEm",&hadronicOverEm);
+  jetTree[4]->SetBranchAddress("pho_ecalClusterIsoR4",&ecalIso);
+  jetTree[4]->SetBranchAddress("pho_hcalRechitIsoR4",&hcalIso);
+  jetTree[4]->SetBranchAddress("pho_trackIsoR4PtCut20",&trackIso);
+  jetTree[4]->SetBranchAddress("phoHoverE",&hadronicOverEm);
   jetTree[4]->SetBranchAddress("phoSigmaIEtaIEta",&phoSigmaIEtaIEta);
   jetTree[4]->SetBranchAddress("phoE",&phoE);
   jetTree[4]->SetBranchAddress("phoEt",&phoEt);
@@ -235,15 +235,30 @@ void checkECALrechit(int startfile = 0,
   fout->cd();
 
   // define the histograms:
+  TH1F * hChi2_rechit_isopho_ee = new TH1F("hChi2_rechit_isopho_ee","chi2 of rechits near isolated photons, endcap",70, 0, 70);
+  TH1F * hChi2_rechit_e5_isopho_ee = new TH1F("hChi2_rechit_e5_isopho_ee","chi2 of rechits (e>5GeV) near isolated photons, endcap",70, 0, 70);
+  TH1F * hChi2_rechit_isopho_eb = new TH1F("hChi2_rechit_isopho_eb","chi2 of rechits near isolated photons, barrel",70, 0, 70);
+  TH1F * hChi2_rechit_e5_isopho_eb = new TH1F("hChi2_rechit_e5_isopho_eb","chi2 of rechits (e>5GeV) near isolated photons, barrel",70, 0, 70);
+
+  TH1F * hErr_rechit_isopho_ee = new TH1F("hErr_rechit_isopho_ee","Err of rechits near isolated photons, endcap",100, 0, 0.5);
+  TH1F * hErr_rechit_e5_isopho_ee = new TH1F("hErr_rechit_e5_isopho_ee","Err of rechits (e>5GeV) near isolated photons, endcap",100, 0, 0.5);
+  TH1F * hErr_rechit_isopho_eb = new TH1F("hErr_rechit_isopho_eb","Err of rechits near isolated photons, barrel",100, 0, 0.5);
+  TH1F * hErr_rechit_e5_isopho_eb = new TH1F("hErr_rechit_e5_isopho_eb","Err of rechits (e>5GeV) near isolated photons, barrel",100, 0, 0.5);
+
+  TH2F * hChi2_vs_Err_isopho_ee = new TH2F("hChi2_vs_Err_isopho_ee","Endcap Rechits near isolated photons Endcap;Err;Chi2",100, 0, 0.5, 70, 0, 70);
+  TH2F * hChi2_vs_Err_e5_isopho_ee = new TH2F("hChi2_vs_Err_e5_isopho_ee","Endcap Rechits (e>5GeV) near isolated photons Endcap;Err;Chi2",100, 0, 0.5, 70, 0, 70);
+  TH2F * hChi2_vs_Err_isopho_eb = new TH2F("hChi2_vs_Err_isopho_eb","Endcap Rechits near isolated photons Barrel;Err;Chi2",100, 0, 0.5, 70, 0, 70);
+  TH2F * hChi2_vs_Err_e5_isopho_eb = new TH2F("hChi2_vs_Err_e5_isopho_eb","Endcap Rechits (e>5GeV) near isolated photons Barrel;Err;Chi2",100, 0, 0.5, 70, 0, 70);
 
   if(printDebug) cout<<"Running through all the events now"<<endl;
-  Long64_t nentries = jetTree[0]->GetEntries();
+  //Long64_t nentries = jetTree[0]->GetEntries();
+  Long64_t nentries = 10000;;
   if(printDebug) nentries = 10;
   TRandom rnd;
 
   for(int nEvt = 0; nEvt < nentries; ++ nEvt) {
 
-    if(nEvt%10000 == 0)cout<<nEvt<<"/"<<nentries<<endl;
+    if(nEvt%1000 == 0)cout<<nEvt<<"/"<<nentries<<endl;
     if(printDebug)cout<<"nEvt = "<<nEvt<<endl;
     
     for(int t = 0;t<N;++t) jetTree[t]->GetEntry(nEvt);
@@ -293,7 +308,12 @@ void checkECALrechit(int startfile = 0,
 	  float delR = deltaR(isopho_eta[isop], isopho_phi[isop], eb_eta[nrec], eb_phi[nrec]);
 	  if(delR<0.2){
 	    // fill the histograms you want
-	    
+	    hChi2_rechit_isopho_eb->Fill(eb_chi2[nrec]);
+	    if(eb_e[nrec]>=5.0) hChi2_rechit_e5_isopho_eb->Fill(eb_chi2[nrec]);
+	    hErr_rechit_isopho_eb->Fill(eb_err[nrec]);
+	    if(eb_e[nrec]>=5.0) hErr_rechit_e5_isopho_eb->Fill(eb_err[nrec]);
+	    hChi2_vs_Err_isopho_eb->Fill(eb_err[nrec], eb_chi2[nrec]);
+	    if(eb_e[nrec]>=5.0) hChi2_vs_Err_isopho_eb->Fill(eb_err[nrec], eb_chi2[nrec]);
 	  }
 	}// rechit barrel loop
 
@@ -302,7 +322,12 @@ void checkECALrechit(int startfile = 0,
 	  float delR = deltaR(isopho_eta[isop], isopho_phi[isop], ee_eta[nrec], ee_phi[nrec]);
 	  if(delR<0.2){
 	    // fill the histograms you want
-	    
+	    hChi2_rechit_isopho_ee->Fill(ee_chi2[nrec]);
+	    if(ee_e[nrec]>=5.0) hChi2_rechit_e5_isopho_ee->Fill(ee_chi2[nrec]);
+	    hErr_rechit_isopho_ee->Fill(ee_err[nrec]);
+	    if(ee_e[nrec]>=5.0) hErr_rechit_e5_isopho_ee->Fill(ee_err[nrec]);
+	    hChi2_vs_Err_isopho_e->Fill(ee_err[nrec], ee_chi2[nrec]);
+	    if(ee_e[nrec]>=5.0) hChi2_vs_Err_isopho_ee->Fill(ee_err[nrec], ee_chi2[nrec]);	    
 	  }
 	}// rechit endcap loop
 	
