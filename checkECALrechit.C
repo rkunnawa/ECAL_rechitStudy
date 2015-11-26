@@ -37,6 +37,7 @@
 #include "TMath.h"
 #include "TLine.h"
 
+#define pi 3.14159265359
 
 float deltaR(float eta1, float phi1, float eta2, float phi2)
 {
@@ -71,9 +72,7 @@ void checkECALrechit(int startfile = 0,
   bool printDebug = false;
   bool doIsoPhoMatching = true;
   bool doJetMatching = true;
-  
-  if(printDebug)cout<<"radius = "<<radius<<endl;
-  
+    
   TDatime date;
 
   std::string infile_Forest;
@@ -130,6 +129,9 @@ void checkECALrechit(int startfile = 0,
 
   }
 
+  //hlt
+  int minbiasBit;
+  
   // jet
   int nref_F;
   float pt_F[1000];
@@ -180,19 +182,22 @@ void checkECALrechit(int startfile = 0,
   float ee_err[MAXHITS];
 
   // set the branch address
-  jetTree[1]->SetBranchAddress("evt",&evt_F);
-  jetTree[1]->SetBranchAddress("run",&run_F);
-  jetTree[1]->SetBranchAddress("lumi",&lumi_F);
-  jetTree[1]->SetBranchAddress("vz",&vz_F);
 
-  jetTree[2]->SetBranchAddress("pcollisionEventSelection",&pcollisionEventSelection_F);
-  jetTree[2]->SetBranchAddress("pHBHENoiseFilterResultProducer",&pHBHENoiseFilter_F);
+  jetTree[1]->SetBranchAddress("_hltminbias_",&minbiasBit);
+  
+  jetTree[2]->SetBranchAddress("evt",&evt_F);
+  jetTree[2]->SetBranchAddress("run",&run_F);
+  jetTree[2]->SetBranchAddress("lumi",&lumi_F);
+  jetTree[2]->SetBranchAddress("vz",&vz_F);
+
+  jetTree[1]->SetBranchAddress("pcollisionEventSelection",&pcollisionEventSelection_F);
+  jetTree[1]->SetBranchAddress("pHBHENoiseFilterResultProducer",&pHBHENoiseFilter_F);
 
   jetTree[3]->SetBranchAddress("nref",&nref_F);
   jetTree[3]->SetBranchAddress("jtpt",pt_F);
   jetTree[3]->SetBranchAddress("jteta",eta_F);
   jetTree[3]->SetBranchAddress("rawpt",eta_F);
-  jetTree[3]->SetBranchAddress("jtphi",jtphi_F);
+  jetTree[3]->SetBranchAddress("jtphi",phi_F);
 
   jetTree[4]->SetBranchAddress("ecalIso",&ecalIso);
   jetTree[4]->SetBranchAddress("hcalIso",&hcalIso);
@@ -210,7 +215,7 @@ void checkECALrechit(int startfile = 0,
   jetTree[5]->SetBranchAddress("e",eb_e);
   jetTree[5]->SetBranchAddress("et",eb_et);
   jetTree[5]->SetBranchAddress("phi",eb_phi);
-  jetTree[5]->SetBranchAddress("evt",eb_evt);
+  jetTree[5]->SetBranchAddress("eta",eb_eta);
   jetTree[5]->SetBranchAddress("perp",eb_perp);
   jetTree[5]->SetBranchAddress("chi2",eb_chi2);
   jetTree[5]->SetBranchAddress("eError",eb_err);
@@ -219,7 +224,7 @@ void checkECALrechit(int startfile = 0,
   jetTree[6]->SetBranchAddress("e",ee_e);
   jetTree[6]->SetBranchAddress("et",ee_et);
   jetTree[6]->SetBranchAddress("phi",ee_phi);
-  jetTree[6]->SetBranchAddress("evt",ee_evt);
+  jetTree[6]->SetBranchAddress("eta",ee_eta);
   jetTree[6]->SetBranchAddress("perp",ee_perp);
   jetTree[6]->SetBranchAddress("chi2",ee_chi2);
   jetTree[6]->SetBranchAddress("eError",ee_err);
@@ -247,6 +252,9 @@ void checkECALrechit(int startfile = 0,
     if(pHBHENoiseFilter_F == 0) continue;
     if(fabs(vz_F)>15) continue;
 
+    // minbias selection
+    // if(!minbiasBit) continue; 
+    
     // photon isolation cuts
 
     std::vector<float> isopho_E;
@@ -254,7 +262,7 @@ void checkECALrechit(int startfile = 0,
     std::vector<float> isopho_eta;
     std::vector<float> isopho_phi;
 
-    for(unsigned ipho = 0; ipho<phopt.size(); ++ipho){
+    for(unsigned ipho = 0; ipho<phoE->size(); ++ipho){
 
       bool passedSpikeRejection = (   phoSigmaIEtaIEta->at(ipho) > 0.002
 				   && pho_swissCrx->at(ipho) < 0.9
@@ -276,7 +284,7 @@ void checkECALrechit(int startfile = 0,
       
     }// photon loop
 
-    if(isopho_E.size()!=0) && doIsoPhoMatching{
+    if(isopho_E.size()!=0 && doIsoPhoMatching){
     // now do the delta R matching with the ecal rechits and jets
       for(unsigned isop = 0; isop<isopho_E.size(); ++isop){
 
