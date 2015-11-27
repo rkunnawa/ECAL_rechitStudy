@@ -253,20 +253,20 @@ void checkECALrechit(int startfile = 0,
   TH2F * hChi2_vs_Err_e5_isopho_eb = new TH2F("hChi2_vs_Err_e5_isopho_eb","Endcap Rechits (e>5GeV) near isolated photons Barrel;Err;Chi2",100, 0, 0.5, 70, 0, 70);
 
 
-  TH1F * hChi2_rechit_Jet_ee = new TH1F("hChi2_rechit_Jet_ee","chi2 of rechits near isolated photons, endcap",70, 0, 70);
-  TH1F * hChi2_rechit_e5_Jet_ee = new TH1F("hChi2_rechit_e5_Jet_ee","chi2 of rechits (e>5GeV) near isolated photons, endcap",70, 0, 70);
-  TH1F * hChi2_rechit_Jet_eb = new TH1F("hChi2_rechit_Jet_eb","chi2 of rechits near isolated photons, barrel",70, 0, 70);
-  TH1F * hChi2_rechit_e5_Jet_eb = new TH1F("hChi2_rechit_e5_Jet_eb","chi2 of rechits (e>5GeV) near isolated photons, barrel",70, 0, 70);
+  TH1F * hChi2_rechit_Jet_ee = new TH1F("hChi2_rechit_Jet_ee","chi2 of rechits near jets , endcap",70, 0, 70);
+  TH1F * hChi2_rechit_e5_Jet_ee = new TH1F("hChi2_rechit_e5_Jet_ee","chi2 of rechits (e>5GeV) near jets , endcap",70, 0, 70);
+  TH1F * hChi2_rechit_Jet_eb = new TH1F("hChi2_rechit_Jet_eb","chi2 of rechits near jets , barrel",70, 0, 70);
+  TH1F * hChi2_rechit_e5_Jet_eb = new TH1F("hChi2_rechit_e5_Jet_eb","chi2 of rechits (e>5GeV) near jets , barrel",70, 0, 70);
 
-  TH1F * hErr_rechit_Jet_ee = new TH1F("hErr_rechit_Jet_ee","Err of rechits near isolated photons, endcap",100, 0, 0.5);
-  TH1F * hErr_rechit_e5_Jet_ee = new TH1F("hErr_rechit_e5_Jet_ee","Err of rechits (e>5GeV) near isolated photons, endcap",100, 0, 0.5);
-  TH1F * hErr_rechit_Jet_eb = new TH1F("hErr_rechit_Jet_eb","Err of rechits near isolated photons, barrel",100, 0, 0.5);
-  TH1F * hErr_rechit_e5_Jet_eb = new TH1F("hErr_rechit_e5_Jet_eb","Err of rechits (e>5GeV) near isolated photons, barrel",100, 0, 0.5);
+  TH1F * hErr_rechit_Jet_ee = new TH1F("hErr_rechit_Jet_ee","Err of rechits near jets , endcap",100, 0, 0.5);
+  TH1F * hErr_rechit_e5_Jet_ee = new TH1F("hErr_rechit_e5_Jet_ee","Err of rechits (e>5GeV) near jets , endcap",100, 0, 0.5);
+  TH1F * hErr_rechit_Jet_eb = new TH1F("hErr_rechit_Jet_eb","Err of rechits near jets , barrel",100, 0, 0.5);
+  TH1F * hErr_rechit_e5_Jet_eb = new TH1F("hErr_rechit_e5_Jet_eb","Err of rechits (e>5GeV) near jets , barrel",100, 0, 0.5);
 
-  TH2F * hChi2_vs_Err_Jet_ee = new TH2F("hChi2_vs_Err_Jet_ee","Endcap Rechits near isolated photons Endcap;Err;Chi2",100, 0, 0.5, 70, 0, 70);
-  TH2F * hChi2_vs_Err_e5_Jet_ee = new TH2F("hChi2_vs_Err_e5_Jet_ee","Endcap Rechits (e>5GeV) near isolated photons Endcap;Err;Chi2",100, 0, 0.5, 70, 0, 70);
-  TH2F * hChi2_vs_Err_Jet_eb = new TH2F("hChi2_vs_Err_Jet_eb","Endcap Rechits near isolated photons Barrel;Err;Chi2",100, 0, 0.5, 70, 0, 70);
-  TH2F * hChi2_vs_Err_e5_Jet_eb = new TH2F("hChi2_vs_Err_e5_Jet_eb","Endcap Rechits (e>5GeV) near isolated photons Barrel;Err;Chi2",100, 0, 0.5, 70, 0, 70);
+  TH2F * hChi2_vs_Err_Jet_ee = new TH2F("hChi2_vs_Err_Jet_ee","Endcap Rechits near jets  Endcap;Err;Chi2",100, 0, 0.5, 70, 0, 70);
+  TH2F * hChi2_vs_Err_e5_Jet_ee = new TH2F("hChi2_vs_Err_e5_Jet_ee","Endcap Rechits (e>5GeV) near jets  Endcap;Err;Chi2",100, 0, 0.5, 70, 0, 70);
+  TH2F * hChi2_vs_Err_Jet_eb = new TH2F("hChi2_vs_Err_Jet_eb","Endcap Rechits near jets  Barrel;Err;Chi2",100, 0, 0.5, 70, 0, 70);
+  TH2F * hChi2_vs_Err_e5_Jet_eb = new TH2F("hChi2_vs_Err_e5_Jet_eb","Endcap Rechits (e>5GeV) near jets  Barrel;Err;Chi2",100, 0, 0.5, 70, 0, 70);
 
   
   TH1F * hEvtno = new TH1F("hEvtno","",2, 0, 2);
