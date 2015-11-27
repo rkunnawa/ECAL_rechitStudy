@@ -144,6 +144,7 @@ void checkECALrechit(int startfile = 0,
   int evt_F;
   int run_F;
   int lumi_F;
+  int hiBin_F;
 
   // skim
   int pcollisionEventSelection_F;
@@ -183,15 +184,16 @@ void checkECALrechit(int startfile = 0,
 
   // set the branch address
 
-  jetTree[1]->SetBranchAddress("_hltminbias_",&minbiasBit);
+  jetTree[0]->SetBranchAddress("HLT_HIL1MinimumBiasHF1ANDExpress_v1",&minbiasBit);
   
+  jetTree[1]->SetBranchAddress("pcollisionEventSelection",&pcollisionEventSelection_F);
+  jetTree[1]->SetBranchAddress("pHBHENoiseFilterResultProducer",&pHBHENoiseFilter_F);
+
   jetTree[2]->SetBranchAddress("evt",&evt_F);
   jetTree[2]->SetBranchAddress("run",&run_F);
   jetTree[2]->SetBranchAddress("lumi",&lumi_F);
   jetTree[2]->SetBranchAddress("vz",&vz_F);
-
-  jetTree[1]->SetBranchAddress("pcollisionEventSelection",&pcollisionEventSelection_F);
-  jetTree[1]->SetBranchAddress("pHBHENoiseFilterResultProducer",&pHBHENoiseFilter_F);
+  jetTree[2]->SetBranchAddress("hiBin",&hiBin_F);
 
   jetTree[3]->SetBranchAddress("nref",&nref_F);
   jetTree[3]->SetBranchAddress("jtpt",pt_F);
@@ -250,9 +252,55 @@ void checkECALrechit(int startfile = 0,
   TH2F * hChi2_vs_Err_isopho_eb = new TH2F("hChi2_vs_Err_isopho_eb","Endcap Rechits near isolated photons Barrel;Err;Chi2",100, 0, 0.5, 70, 0, 70);
   TH2F * hChi2_vs_Err_e5_isopho_eb = new TH2F("hChi2_vs_Err_e5_isopho_eb","Endcap Rechits (e>5GeV) near isolated photons Barrel;Err;Chi2",100, 0, 0.5, 70, 0, 70);
 
+
+  TH1F * hChi2_rechit_Jet_ee = new TH1F("hChi2_rechit_Jet_ee","chi2 of rechits near isolated photons, endcap",70, 0, 70);
+  TH1F * hChi2_rechit_e5_Jet_ee = new TH1F("hChi2_rechit_e5_Jet_ee","chi2 of rechits (e>5GeV) near isolated photons, endcap",70, 0, 70);
+  TH1F * hChi2_rechit_Jet_eb = new TH1F("hChi2_rechit_Jet_eb","chi2 of rechits near isolated photons, barrel",70, 0, 70);
+  TH1F * hChi2_rechit_e5_Jet_eb = new TH1F("hChi2_rechit_e5_Jet_eb","chi2 of rechits (e>5GeV) near isolated photons, barrel",70, 0, 70);
+
+  TH1F * hErr_rechit_Jet_ee = new TH1F("hErr_rechit_Jet_ee","Err of rechits near isolated photons, endcap",100, 0, 0.5);
+  TH1F * hErr_rechit_e5_Jet_ee = new TH1F("hErr_rechit_e5_Jet_ee","Err of rechits (e>5GeV) near isolated photons, endcap",100, 0, 0.5);
+  TH1F * hErr_rechit_Jet_eb = new TH1F("hErr_rechit_Jet_eb","Err of rechits near isolated photons, barrel",100, 0, 0.5);
+  TH1F * hErr_rechit_e5_Jet_eb = new TH1F("hErr_rechit_e5_Jet_eb","Err of rechits (e>5GeV) near isolated photons, barrel",100, 0, 0.5);
+
+  TH2F * hChi2_vs_Err_Jet_ee = new TH2F("hChi2_vs_Err_Jet_ee","Endcap Rechits near isolated photons Endcap;Err;Chi2",100, 0, 0.5, 70, 0, 70);
+  TH2F * hChi2_vs_Err_e5_Jet_ee = new TH2F("hChi2_vs_Err_e5_Jet_ee","Endcap Rechits (e>5GeV) near isolated photons Endcap;Err;Chi2",100, 0, 0.5, 70, 0, 70);
+  TH2F * hChi2_vs_Err_Jet_eb = new TH2F("hChi2_vs_Err_Jet_eb","Endcap Rechits near isolated photons Barrel;Err;Chi2",100, 0, 0.5, 70, 0, 70);
+  TH2F * hChi2_vs_Err_e5_Jet_eb = new TH2F("hChi2_vs_Err_e5_Jet_eb","Endcap Rechits (e>5GeV) near isolated photons Barrel;Err;Chi2",100, 0, 0.5, 70, 0, 70);
+
+  
+  TH1F * hEvtno = new TH1F("hEvtno","",2, 0, 2);
+
+  TH1F * hCent = new TH1F("hcent","",200, 0, 200);
+
+  TH1F * hPhotonSpectra_bad_010_barrel = new TH1F("hPhotonSpectra_bad_010_barrel","",100, 0, 300);
+  TH1F * hPhotonSpectra_bad_1030_barrel = new TH1F("hPhotonSpectra_bad_1030_barrel","",100, 0, 300);
+  TH1F * hPhotonSpectra_bad_3050_barrel = new TH1F("hPhotonSpectra_bad_3050_barrel","",100, 0, 300);
+  TH1F * hPhotonSpectra_bad_50100_barrel = new TH1F("hPhotonSpectra_bad_50100_barrel","",100, 0, 300);
+  TH1F * hPhotonSpectra_bad_barrel = new TH1F("hPhotonSpectra_bad_barrel","",100, 0, 300);
+
+  TH1F * hPhotonSpectra_good_010_barrel = new TH1F("hPhotonSpectra_good_010_barrel","",100, 0, 300);
+  TH1F * hPhotonSpectra_good_1030_barrel = new TH1F("hPhotonSpectra_good_1030_barrel","",100, 0, 300);
+  TH1F * hPhotonSpectra_good_3050_barrel = new TH1F("hPhotonSpectra_good_3050_barrel","",100, 0, 300);
+  TH1F * hPhotonSpectra_good_50100_barrel = new TH1F("hPhotonSpectra_good_50100_barrel","",100, 0, 300);
+  TH1F * hPhotonSpectra_good_barrel = new TH1F("hPhotonSpectra_good_barrel","",100, 0, 300);
+
+  TH1F * hPhotonSpectra_bad_010_endcap = new TH1F("hPhotonSpectra_bad_010_endcap","",100, 0, 300);
+  TH1F * hPhotonSpectra_bad_1030_endcap = new TH1F("hPhotonSpectra_bad_1030_endcap","",100, 0, 300);
+  TH1F * hPhotonSpectra_bad_3050_endcap = new TH1F("hPhotonSpectra_bad_3050_endcap","",100, 0, 300);
+  TH1F * hPhotonSpectra_bad_50100_endcap = new TH1F("hPhotonSpectra_bad_50100_endcap","",100, 0, 300);
+  TH1F * hPhotonSpectra_bad_endcap = new TH1F("hPhotonSpectra_bad_endcap","",100, 0, 300);
+
+  TH1F * hPhotonSpectra_good_010_endcap = new TH1F("hPhotonSpectra_good_010_endcap","",100, 0, 300);
+  TH1F * hPhotonSpectra_good_1030_endcap = new TH1F("hPhotonSpectra_good_1030_endcap","",100, 0, 300);
+  TH1F * hPhotonSpectra_good_3050_endcap = new TH1F("hPhotonSpectra_good_3050_endcap","",100, 0, 300);
+  TH1F * hPhotonSpectra_good_50100_endcap = new TH1F("hPhotonSpectra_good_50100_endcap","",100, 0, 300);
+  TH1F * hPhotonSpectra_good_endcap = new TH1F("hPhotonSpectra_good_endcap","",100, 0, 300);
+
+  
   if(printDebug) cout<<"Running through all the events now"<<endl;
-  //Long64_t nentries = jetTree[0]->GetEntries();
-  Long64_t nentries = 30000;;
+  Long64_t nentries = jetTree[0]->GetEntries();
+  //Long64_t nentries = 50000;
   if(printDebug) nentries = 10;
   TRandom rnd;
 
@@ -266,9 +314,12 @@ void checkECALrechit(int startfile = 0,
     if(pcollisionEventSelection_F==0) continue;
     if(pHBHENoiseFilter_F == 0) continue;
     if(fabs(vz_F)>15) continue;
+    if(!minbiasBit) continue; 
 
+    hEvtno->Fill(1);
+    hCent->Fill(hiBin_F);
+    
     // minbias selection
-    // if(!minbiasBit) continue; 
     
     // photon isolation cuts
 
@@ -303,8 +354,10 @@ void checkECALrechit(int startfile = 0,
     // now do the delta R matching with the ecal rechits and jets
       for(unsigned isop = 0; isop<isopho_E.size(); ++isop){
 
+	bool Skip = false;
 	// ecal rechit barrel
-	for(int nrec = 0; nrec<eb_n; ++nrec){  
+	for(int nrec = 0; nrec<eb_n; ++nrec){
+	  if(Skip) break;	  
 	  float delR = deltaR(isopho_eta[isop], isopho_phi[isop], eb_eta[nrec], eb_phi[nrec]);
 	  if(delR<0.2){
 	    // fill the histograms you want
@@ -314,11 +367,29 @@ void checkECALrechit(int startfile = 0,
 	    if(eb_e[nrec]>=5.0) hErr_rechit_e5_isopho_eb->Fill(eb_err[nrec]);
 	    hChi2_vs_Err_isopho_eb->Fill(eb_err[nrec], eb_chi2[nrec]);
 	    if(eb_e[nrec]>=5.0) hChi2_vs_Err_e5_isopho_eb->Fill(eb_err[nrec], eb_chi2[nrec]);
-	  }
-	}// rechit barrel loop
 
+	    if(eb_chi2[nrec]>=64.0){
+	      if(hiBin_F <20) hPhotonSpectra_bad_010_barrel->Fill(isopho_Et[isop]);
+	      if(hiBin_F >=20 && hiBin_F<60) hPhotonSpectra_bad_1030_barrel->Fill(isopho_Et[isop]);
+	      if(hiBin_F >=60 && hiBin_F<100) hPhotonSpectra_bad_3050_barrel->Fill(isopho_Et[isop]);
+	      if(hiBin_F >=100) hPhotonSpectra_bad_50100_barrel->Fill(isopho_Et[isop]);
+	      Skip = true;
+	    }
+	    if(eb_chi2[nrec]<64.0){
+	      if(hiBin_F <20) hPhotonSpectra_good_010_barrel->Fill(isopho_Et[isop]);
+	      if(hiBin_F >=20 && hiBin_F<60) hPhotonSpectra_good_1030_barrel->Fill(isopho_Et[isop]);
+	      if(hiBin_F >=60 && hiBin_F<100) hPhotonSpectra_good_3050_barrel->Fill(isopho_Et[isop]);
+	      if(hiBin_F >=100) hPhotonSpectra_good_50100_barrel->Fill(isopho_Et[isop]);
+	      Skip = true;
+	    }
+	    
+	  }	  
+	}// rechit barrel loop
+	
+	Skip = false;
 	// ecal rechit endcap
 	for(int nrec = 0; nrec<ee_n; ++nrec){  
+	  if(Skip) break;	  
 	  float delR = deltaR(isopho_eta[isop], isopho_phi[isop], ee_eta[nrec], ee_phi[nrec]);
 	  if(delR<0.2){
 	    // fill the histograms you want
@@ -328,10 +399,25 @@ void checkECALrechit(int startfile = 0,
 	    if(ee_e[nrec]>=5.0) hErr_rechit_e5_isopho_ee->Fill(ee_err[nrec]);
 	    hChi2_vs_Err_isopho_ee->Fill(ee_err[nrec], ee_chi2[nrec]);
 	    if(ee_e[nrec]>=5.0) hChi2_vs_Err_e5_isopho_ee->Fill(ee_err[nrec], ee_chi2[nrec]);	    
+
+	    if(ee_chi2[nrec]>=64.0){
+	      if(hiBin_F <20) hPhotonSpectra_bad_010_endcap->Fill(isopho_Et[isop]);
+	      if(hiBin_F >=20 && hiBin_F<60) hPhotonSpectra_bad_1030_endcap->Fill(isopho_Et[isop]);
+	      if(hiBin_F >=60 && hiBin_F<100) hPhotonSpectra_bad_3050_endcap->Fill(isopho_Et[isop]);
+	      if(hiBin_F >=100) hPhotonSpectra_bad_50100_endcap->Fill(isopho_Et[isop]);
+	      Skip = true;
+	    }
+	    if(ee_chi2[nrec]<64.0){
+	      if(hiBin_F <20) hPhotonSpectra_good_010_endcap->Fill(isopho_Et[isop]);
+	      if(hiBin_F >=20 && hiBin_F<60) hPhotonSpectra_good_1030_endcap->Fill(isopho_Et[isop]);
+	      if(hiBin_F >=60 && hiBin_F<100) hPhotonSpectra_good_3050_endcap->Fill(isopho_Et[isop]);
+	      if(hiBin_F >=100) hPhotonSpectra_good_50100_endcap->Fill(isopho_Et[isop]);
+	      Skip = true;
+	    }
 	  }
 	}// rechit endcap loop
-	
-      }// isolated photon cuts
+
+      }// isolated photon loop
 
     }// iso photon size
 
@@ -344,20 +430,35 @@ void checkECALrechit(int startfile = 0,
 
     if(doJetMatching){
       for(int njet = 0; njet<nref_F; ++njet){
+
+	if(pt_F[njet] <= 30.0) continue;
+	
 	// ecal rechit barrel
 	for(int nrec = 0; nrec<eb_n; ++nrec){  
 	  float delR = deltaR(eta_F[njet], phi_F[njet], eb_eta[nrec], eb_phi[nrec]);
 	  if(delR<0.2){
 	    // fill the histograms you want
+	    hChi2_rechit_Jet_eb->Fill(eb_chi2[nrec]);
+	    if(eb_e[nrec]>=5.0) hChi2_rechit_e5_Jet_eb->Fill(eb_chi2[nrec]);
+	    hErr_rechit_Jet_eb->Fill(eb_err[nrec]);
+	    if(eb_e[nrec]>=5.0) hErr_rechit_e5_Jet_eb->Fill(eb_err[nrec]);
+	    hChi2_vs_Err_Jet_eb->Fill(eb_err[nrec], eb_chi2[nrec]);
+	    if(eb_e[nrec]>=5.0) hChi2_vs_Err_e5_Jet_eb->Fill(eb_err[nrec], eb_chi2[nrec]);
 	    
 	  }
 	}// rechit barrel loop
 
 	// ecal rechit endcap
-	for(int nrec = 0; nrec<ee_n; ++nrec){  
+	for(int nrec = 0; nrec<ee_n; ++nrec){	  
 	  float delR = deltaR(eta_F[njet], phi_F[njet], ee_eta[nrec], ee_phi[nrec]);
 	  if(delR<0.2){
 	    // fill the histograms you want
+	    hChi2_rechit_Jet_ee->Fill(ee_chi2[nrec]);
+	    if(ee_e[nrec]>=5.0) hChi2_rechit_e5_Jet_ee->Fill(ee_chi2[nrec]);
+	    hErr_rechit_Jet_ee->Fill(ee_err[nrec]);
+	    if(ee_e[nrec]>=5.0) hErr_rechit_e5_Jet_ee->Fill(ee_err[nrec]);
+	    hChi2_vs_Err_Jet_ee->Fill(ee_err[nrec], ee_chi2[nrec]);
+	    if(ee_e[nrec]>=5.0) hChi2_vs_Err_e5_Jet_ee->Fill(ee_err[nrec], ee_chi2[nrec]);
 	    
 	  }
 	}// rechit endcap loop
